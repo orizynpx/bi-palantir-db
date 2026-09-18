@@ -1,6 +1,6 @@
 # Palantir DB
 
-This the the repository for a mock DB themed around the software company Palantir.
+This the the repository for a mock database themed around the software company Palantir. A Business Intelligence assignment.
 
 ## Database Design
 
@@ -11,7 +11,13 @@ Master tables are
 - `edge_sensors`
 - `target_categories`
 
-While the rest are transactional tables.
+While the rest are transactional tables:
+
+- `mission_deployments`
+- `sensor_telemetry_logs`
+- `threat_detections`
+- `targeting_effector_pairings`
+- `operator_decision_logs`
 
 ## How to Replicate
 
@@ -46,3 +52,8 @@ SELECT 'targeting_effector_pairings', COUNT(*) FROM targeting_effector_pairings
 UNION ALL
 SELECT 'operator_decision_logs', COUNT(*) FROM operator_decision_logs;
 ```
+
+## Credits
+
+- **Arya Arrozza Ridho Syaputra (2410817210010):** Database design
+- **Noor Muhammad Akmal Sulaiman (2410817210007):** PostgreSQL implementation on Docker container
