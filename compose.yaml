@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: palantir_db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: palantir_ops
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/01_init.sql
+      - ./seed.sql:/docker-entrypoint-initdb.d/02_seed.sql
+      - palantir_pgdata:/var/lib/postgresql/data
+
+volumes:
+  palantir_pgdata:
