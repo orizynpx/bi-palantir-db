@@ -1,11 +1,12 @@
 -- Seed 5 rows each into the master tables
+
 INSERT INTO edge_sensors (sensor_id, sensor_name, sensor_type, status, last_known_latitude, last_known_longitude, created_at)
 VALUES 
-  ('S-1', 'Radar-Alpha', 'SAT', 'ACTIVE', -6.17, 106.82, NOW()),
-  ('S-2', 'Drone-Eye-1', 'DRONE', 'ACTIVE', -6.20, 106.85, NOW()),
-  ('S-3', 'Titan-Scan-A', 'TITAN', 'OFFLINE', -6.15, 106.80, NOW()),
-  ('S-4', 'Sat-Vanguard', 'SAT', 'ACTIVE', -6.22, 106.88, NOW()),
-  ('S-5', 'Drone-Eye-2', 'DRONE', 'ACTIVE', -6.18, 106.83, NOW());
+  ('S-1', 'Radar-Alpha', 'SAT', 'ACTIVE', -6.1750, 106.8283, NOW() - INTERVAL '30 days'),
+  ('S-2', 'Drone-Eye-1', 'DRONE', 'ACTIVE', -6.2012, 106.8541, NOW() - INTERVAL '20 days'),
+  ('S-3', 'Titan-Scan-A', 'TITAN', 'OFFLINE', -6.1523, 106.8011, NOW() - INTERVAL '15 days'),
+  ('S-4', 'Sat-Vanguard', 'SAT', 'ACTIVE', -6.2289, 106.8834, NOW() - INTERVAL '10 days'),
+  ('S-5', 'Drone-Eye-2', 'DRONE', 'ACTIVE', -6.1845, 106.8392, NOW() - INTERVAL '5 days');
 
 INSERT INTO target_categories (category_id, category_name, threat_level, description)
 VALUES 
@@ -16,6 +17,7 @@ VALUES
   (5, 'MISSILE', 'CRITICAL', 'Ballistic Projectile');
 
 -- Seed 1200 rows of data into the transactional tables
+
 INSERT INTO sensor_telemetry_logs (sensor_id, timestamp, altitude_meters, battery_bandwidth_pct, latitude, longitude, network_connected)
 SELECT 
   (ARRAY['S-1', 'S-2', 'S-3', 'S-4', 'S-5'])[floor(random() * 5 + 1)],
@@ -72,15 +74,19 @@ SELECT
     'type', 'Polygon',
     'coordinates', jsonb_build_array(
       jsonb_build_array(
-        jsonb_build_array(round((106.70 + random() * 0.05)::numeric, 4), round((-6.30 + random() * 0.05)::numeric, 4)),
-        jsonb_build_array(round((106.85 + random() * 0.05)::numeric, 4), round((-6.30 + random() * 0.05)::numeric, 4)),
-        jsonb_build_array(round((106.85 + random() * 0.05)::numeric, 4), round((-6.15 + random() * 0.05)::numeric, 4)),
-        jsonb_build_array(round((106.70 + random() * 0.05)::numeric, 4), round((-6.30 + random() * 0.05)::numeric, 4))
+        jsonb_build_array(pts.p_lon, pts.p_lat),
+        jsonb_build_array(pts.p_lon + 0.05, pts.p_lat),
+        jsonb_build_array(pts.p_lon + 0.05, pts.p_lat + 0.05),
+        jsonb_build_array(pts.p_lon, pts.p_lat)
       )
     )
   ),
   NOW() - (i || ' hours')::interval,
   NOW() - (i || ' hours')::interval + (floor(random() * 8 + 1) || ' hours')::interval,
-  (ARRAY['ONGOING', 'COMPLETE', 'ABORTED'])[floor(random() * 3 + 1)],
+  (ARRAY['ONGOING', 'COMPLETED', 'ABORTED'])[floor(random() * 3 + 1)],
   (ARRAY['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'])[floor(random() * 4 + 1)]
-FROM generate_series(1, 1200) i;
+FROM generate_series(1, 1200) i
+CROSS JOIN LATERAL (
+  SELECT round((106.70 + random() * 0.05)::numeric, 4) AS p_lon,
+         round((-6.30 + random() * 0.05)::numeric, 4) AS p_lat
+) pts;
