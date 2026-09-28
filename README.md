@@ -106,17 +106,29 @@ erDiagram
         DOUBLE_PRECISION command_post_longitude
     }
 ```
+
+Master tables are
+
+- `edge_sensors`
+- `target_categories`
+
+While the rest are transactional tables:
+
+- `mission_deployments`
+- `sensor_telemetry_logs`
+- `threat_detections`
+- `targeting_effector_pairings`
+- `operator_decision_logs`
+
 ## Dimensional Modelling
 ```mermaid
 erDiagram
-    %% Dimension Relationships to Fact: Threat Detections
     dim_sensor ||--o{ fact_threat_detections : "sources"
     dim_mission ||--o{ fact_threat_detections : "scopes"
     dim_target_category ||--o{ fact_threat_detections : "classifies"
     dim_geography ||--o{ fact_threat_detections : "located_at"
     dim_date ||--o{ fact_threat_detections : "detected_on"
 
-    %% Dimension Relationships to Fact: Killchain Decisions
     dim_sensor ||--o{ fact_killchain_decisions : "detecting_sensor"
     dim_mission ||--o{ fact_killchain_decisions : "operational_mission"
     dim_target_category ||--o{ fact_killchain_decisions : "threat_category"
@@ -124,7 +136,6 @@ erDiagram
     dim_operator ||--o{ fact_killchain_decisions : "deciding_operator"
     dim_date ||--o{ fact_killchain_decisions : "decided_on"
 
-    %% Dimension Relationships to Fact: Telemetry Snapshot
     dim_sensor ||--o{ fact_sensor_telemetry_snapshot : "monitors"
     dim_mission ||--o{ fact_sensor_telemetry_snapshot : "deploys"
     dim_geography ||--o{ fact_sensor_telemetry_snapshot : "tracked_at"
@@ -242,19 +253,36 @@ erDiagram
         INT telemetry_event_count "Additive Measure"
     }
 ```
+Fact tables are
 
-Master tables are
+- `fact_threat_detections`
+- `fact_killchain_decisions`
+- `fact_sensor_telemetry_snapshot`
 
-- `edge_sensors`
-- `target_categories`
+Dimensional modelling for `fact_threat_detections`
 
-While the rest are transactional tables:
+- `dim_sensor`
+- `dim_mission`
+- `dim_target_category`
+- `dim_geography`
+- `dim_date`
 
-- `mission_deployments`
-- `sensor_telemetry_logs`
-- `threat_detections`
-- `targeting_effector_pairings`
-- `operator_decision_logs`
+Dimensional modelling for `fact_killchain_decisions`
+
+- `dim_sensor`
+- `dim_mission`
+- `dim_target_category`
+- `dim_effector`
+- `dim_operator`
+- `dim_date`
+
+Dimensional modelling for `fact_sensor_telemetry_snapshot`
+
+- `dim_sensor`
+- `dim_mission`
+- `dim_geography`
+- `dim_date`
+- `dim_time`
 
 ## How to Replicate
 
