@@ -307,15 +307,28 @@ docker exec -it palantir_db psql -U admin -d palantir_ops
 4. Use this SQL statement to verify the number of rows for each of the transactional tables:
 
 ```sh
-SELECT 'mission_deployments' AS table_name, COUNT(*) AS row_count FROM mission_deployments
+SELECT 'dim_sensor' AS table_name, COUNT(*) AS row_count FROM dim_sensor
 UNION ALL
-SELECT 'sensor_telemetry_logs', COUNT(*) FROM sensor_telemetry_logs
+SELECT 'dim_mission', COUNT(*) FROM dim_mission
 UNION ALL
-SELECT 'threat_detections', COUNT(*) FROM threat_detections
+SELECT 'dim_target_category', COUNT(*) FROM dim_target_category
 UNION ALL
-SELECT 'targeting_effector_pairings', COUNT(*) FROM targeting_effector_pairings
+SELECT 'dim_effector', COUNT(*) FROM dim_effector
 UNION ALL
-SELECT 'operator_decision_logs', COUNT(*) FROM operator_decision_logs;
+SELECT 'dim_operator', COUNT(*) FROM dim_operator
+UNION ALL
+SELECT 'dim_geography', COUNT(*) FROM dim_geography
+UNION ALL
+SELECT 'dim_date', COUNT(*) FROM dim_date
+UNION ALL
+SELECT 'dim_time', COUNT(*) FROM dim_time
+UNION ALL
+SELECT 'fact_threat_detections', COUNT(*) FROM fact_threat_detections
+UNION ALL
+SELECT 'fact_killchain_decisions', COUNT(*) FROM fact_killchain_decisions
+UNION ALL
+SELECT 'fact_sensor_telemetry_snapshot', COUNT(*) FROM fact_sensor_telemetry_snapshot
+ORDER BY row_count DESC;
 ```
 
 ## Credits
