@@ -111,10 +111,12 @@ Master tables are
 
 - `edge_sensors`
 - `target_categories`
+- `effectors`
+- `mission_deployments`
 
 While the rest are transactional tables:
 
-- `mission_deployments`
+- `mission_sensors`
 - `sensor_telemetry_logs`
 - `threat_detections`
 - `targeting_effector_pairings`
